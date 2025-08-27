@@ -1,24 +1,36 @@
 {
-  "name": "Sergi Montañes",
-  "headline": "Software Engineer • Backend Specialist",
-  "photo": "/profile.jpg",
-  "about": "Passionate about building scalable backend systems, creating delightful developer experiences, and shipping high-quality products.",
-  "contacts": [
-    { "type": "LinkedIn", "url": "https://linkedin.com/in/sergimontanes" },
-    { "type": "GitHub", "url": "https://github.com/sergimontanes" },
-    { "type": "Email", "url": "mailto:sergi@example.com" }
-  ],
-  "skills": ["Java", "Spring Boot", "React", "TypeScript", "Docker", "AWS"],
-  "projects": [
-    { "name": "PriceKinetics", "description": "A pricing platform for race-day management and integrations.", "link": "https://example.com" },
-    { "name": "Combat Sports", "description": "A React-based community site for combat sports fans and fighters." }
-  ],
-  "testimonials": [
-    { "text": "Sergi is an excellent engineer and team player.", "author": "Jane Doe, CTO" }
-  ],
-  "services": [
-    { "name": "Consulting", "description": "Backend architecture and scaling" }
-  ],
-  "contactText": "Interested in working together? I’m available for freelance and contract work.",
-  "email": "sergi@example.com"
+  "name": { "label": "Name", "value": "Sergi Montañes" },
+  "tagline": { "label": "Tagline", "value": "Software Engineer • Backend Specialist" },
+  "photo": { "label": "Photo", "value": "/profile.jpg" },
+  "about": { "label": "About Me", "value": "Passionate about building scalable backend systems, creating delightful developer experiences, and shipping high-quality products." },
+  "contacts": {
+    "label": "Contacts",
+    "value": [
+      { "type": "LinkedIn", "url": "https://linkedin.com/in/sergimontanes" },
+      { "type": "GitHub", "url": "https://github.com/sergimontanes" },
+      { "type": "Email", "url": "mailto:sergi@example.com" }
+    ]
+  },
+  "skills": { "label": "Skills", "value": ["Java", "Spring Boot", "React", "TypeScript", "Docker", "AWS"] },
+  "projects": {
+    "label": "Projects",
+    "value": [
+      { "name": "PriceKinetics", "description": "A pricing platform for race-day management and integrations.", "link": "https://example.com" },
+      { "name": "Combat Sports", "description": "A React-based community site for combat sports fans and fighters." }
+    ]
+  },
+  "testimonials": {
+    "label": "Testimonials",
+    "value": [
+      { "text": "Sergi is an excellent engineer and team player.", "author": "Jane Doe, CTO" }
+    ]
+  },
+  "services": {
+    "label": "Services",
+    "value": [
+      { "name": "Consulting", "description": "Backend architecture and scaling" }
+    ]
+  },
+  "contactText": { "label": "Contact Text", "value": "Interested in working together? I’m available for freelance and contract work." },
+  "email": { "label": "Email", "value": "sergi@example.com" }
 }

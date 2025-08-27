@@ -2,18 +2,21 @@
 import { useState } from "react";
 import { useRouter } from 'next/router';
 import { profilePropType } from '@propTypes/profilePropTypes';
-import AddSectionDropdown from "@components/edit/AddSectionDropdown";
-import OptionalSectionWrapper from "@components/edit/OptionalSectionWrapper";
-import {OPTIONAL_SECTIONS} from "@components/edit/sections";
+import AddSectionDropdown from "@components/sections/edit/AddSectionDropdown";
+import OptionalSectionWrapper from "@components/sections/edit/OptionalSectionWrapper";
+import EditableLabel from "@components/sections/edit/EditableLabel";
+import { SECTIONS } from "@components/sections/sections";
+import { TEMPLATES } from "@components/templates/templates";
 
 export default function EditProfile({ data, username }) {
     const router = useRouter();
     const [profile, setProfile] = useState(data || {
-        name: '',
-        headline: '',
+        template: {},
+        name: {},
+        headline: {},
         //photo: '',
-        about: '',
-        email: '',
+        about: {},
+        email: {},
         //contacts: [],
         //skills: [],
         //projects: [],
@@ -22,10 +25,6 @@ export default function EditProfile({ data, username }) {
     });
 
     const [saving, setSaving] = useState(false);
-
-    function handleChange(key, value) {
-        setProfile({ ...profile, [key]: value });
-    }
 
     function handleRemoveSection(key) {
         const updated = { ...profile };
@@ -52,8 +51,14 @@ export default function EditProfile({ data, username }) {
         }
     }
 
-    function handleChange(key, value) {
-        setProfile({ ...profile, [key]: value });
+    function handleValueChange(key, newValue) {
+        setProfile({
+            ...profile,
+            [key]: {
+                ...profile[key],        // keep existing label (if any)
+                value: newValue         // update only the value field
+            }
+        });
     }
 
     return (
@@ -61,14 +66,30 @@ export default function EditProfile({ data, username }) {
             <h1 className="text-2xl font-bold mb-6 text-gray-800">Edit Profile</h1>
 
             <form onSubmit={handleSave} className="space-y-6">
+                {/* Template Dropdown */}
+                <div>
+                    <label className="block font-semibold text-gray-700">Template</label>
+                    <select
+                        className="mt-1 w-full border rounded px-3 py-2 bg-white"
+                        value={profile.template.value}
+                        onChange={(e) => handleValueChange('template', e.target.value)}
+                    >
+                        <option value="">-- Select a template --</option>
+                        {Object.keys(TEMPLATES).map((key) => (
+                            <option key={key} value={key}>
+                                {key.charAt(0).toUpperCase() + key.slice(1)}
+                            </option>
+                        ))}
+                    </select>
+                </div>
                 {/* Mandatory fields */}
                 <div>
                     <label className="block font-semibold text-gray-700">Name</label>
                     <input
                         type="text"
                         className="mt-1 w-full border rounded px-3 py-2"
-                        value={profile.name}
-                        onChange={(e) => handleChange('name', e.target.value)}
+                        value={profile.name.value}
+                        onChange={(e) => handleValueChange('name', e.target.value)}
                     />
                 </div>
 
@@ -77,8 +98,8 @@ export default function EditProfile({ data, username }) {
                     <input
                         type="text"
                         className="mt-1 w-full border rounded px-3 py-2"
-                        value={profile.headline}
-                        onChange={(e) => handleChange('headline', e.target.value)}
+                        value={profile.headline.value}
+                        onChange={(e) => handleValueChange('headline', e.target.value)}
                     />
                 </div>
                 {/*<div>
@@ -87,15 +108,21 @@ export default function EditProfile({ data, username }) {
                         type="text"
                         className="mt-1 w-full border rounded px-3 py-2"
                         value={profile.photo}
-                        onChange={(e) => handleChange('photo', e.target.value)}
+                        onChange={(e) => handleValueChange('photo', e.target.value)}
                     />
                 </div>*/}
                 <div>
-                    <label className="block font-semibold text-gray-700">About</label>
+                    <EditableLabel
+                        sectionKey="about"
+                        profile={profile}
+                        setProfile={setProfile}
+                        defaultLabel={SECTIONS["about"] || "About"}
+                    />
+                    {/*<label className="block font-semibold text-gray-700">About</label>*/}
                     <textarea
                         className="mt-1 w-full border rounded px-3 py-2"
-                        value={profile.about}
-                        onChange={(e) => handleChange('about', e.target.value)}
+                        value={profile.about.value}
+                        onChange={(e) => handleValueChange('about', e.target.value)}
                     />
                 </div>
 
@@ -104,13 +131,13 @@ export default function EditProfile({ data, username }) {
                     <input
                         type="email"
                         className="mt-1 w-full border rounded px-3 py-2"
-                        value={profile.email}
-                        onChange={(e) => handleChange('email', e.target.value)}
+                        value={profile.email.value}
+                        onChange={(e) => handleValueChange('email', e.target.value)}
                     />
                 </div>
 
                 {/* Dynamically load optional sections */}
-                {OPTIONAL_SECTIONS.map(({ key, label, Component }) =>
+                {Object.entries(SECTIONS).map(([key, { label, Component }]) =>
                     profile[key] && Component ? (
                         <OptionalSectionWrapper
                             key={key}
@@ -120,8 +147,8 @@ export default function EditProfile({ data, username }) {
                         >
                             {Component && (
                                 <Component
-                                    data={profile[key]}
-                                    onChange={(val) => handleChange(key, val)}
+                                    data={profile[key]?.value}
+                                    onChange={(val) => handleValueChange(key, val)}
                                 />
                             )}
                         </OptionalSectionWrapper>
@@ -131,7 +158,7 @@ export default function EditProfile({ data, username }) {
                 {/* Add section dropdown */}
                 <AddSectionDropdown
                     profile={profile}
-                    onAdd={(section) => handleChange(section.key, section.defaultValue)}
+                    onAdd={(key, defaultValue) => handleValueChange(key, defaultValue)}
                 />
 
                 {/* Preview button */}

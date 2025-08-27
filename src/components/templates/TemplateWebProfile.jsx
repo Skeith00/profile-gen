@@ -1,4 +1,6 @@
 // src/components/templates/TemplateWebProfile.jsx
+import {getLabel} from "@components/sections/sections";
+
 export default function TemplateWebProfile({ data }) {
     return (
         <div className="bg-gray-50 min-h-screen text-gray-800">
@@ -6,26 +8,28 @@ export default function TemplateWebProfile({ data }) {
             <header className="bg-gradient-to-r from-sky-600 to-indigo-600 text-white py-12">
                 <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center gap-6">
                     <img
-                        src={data.photo || "/profile.jpg"}
-                        alt={data.name}
+                        src={data.photo?.value || "/profile.jpg"}
+                        alt={data.name?.value}
                         className="w-28 h-28 rounded-full border-4 border-white object-cover shadow-lg"
                     />
                     <div className="text-center md:text-left">
-                        <h1 className="text-3xl font-bold">{data.name}</h1>
-                        <p className="text-lg mt-1 text-sky-100">{data.headline}</p>
-                        <div className="flex flex-wrap gap-3 mt-3 justify-center md:justify-start">
-                            {data.contacts?.map((c, i) => (
-                                <a
-                                    key={i}
-                                    href={c.url}
-                                    className="bg-white text-sky-700 px-3 py-1 rounded-md text-sm font-medium shadow-sm hover:opacity-90"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    {c.type}
-                                </a>
-                            ))}
-                        </div>
+                        <h1 className="text-3xl font-bold">{data.name?.value}</h1>
+                        <p className="text-lg mt-1 text-sky-100">{data.headline?.value}</p>
+                        {data.contacts?.value?.length > 0 && (
+                            <div className="flex flex-wrap gap-3 mt-3 justify-center md:justify-start">
+                                {data.contacts.value.map((contact, i) => (
+                                    <a
+                                        key={i}
+                                        href={contact.url}
+                                        className="bg-white text-sky-700 px-3 py-1 rounded-md text-sm font-medium shadow-sm hover:opacity-90"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {contact.type}
+                                    </a>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
             </header>
@@ -35,26 +39,26 @@ export default function TemplateWebProfile({ data }) {
                 {/* Left column */}
                 <aside className="md:col-span-1 space-y-6">
                     <div className="bg-white p-4 rounded-lg shadow">
-                        <h3 className="font-semibold text-lg mb-2">About</h3>
-                        <p className="text-gray-700 text-sm leading-relaxed">{data.about}</p>
+                        <h3 className="font-semibold text-lg mb-2">{getLabel(data, "about", "About")}</h3>
+                        <p className="text-gray-700 text-sm leading-relaxed">{data.about?.value}</p>
                     </div>
 
-                    {data.skills?.length > 0 && (
+                    {data.skills?.value?.length > 0 && (
                         <div className="bg-white p-4 rounded-lg shadow">
-                            <h3 className="font-semibold text-lg mb-2">Skills</h3>
+                            <h3 className="font-semibold text-lg mb-2">{getLabel(data, "skills", "Skills")}</h3>
                             <div className="flex flex-wrap gap-2">
-                                {data.skills?.map((s, i) => (
-                                    <span key={i} className="text-sm bg-sky-50 text-sky-700 px-2 py-1 rounded-full">{s}</span>
+                                {data.skills.value?.map((skill, i) => (
+                                    <span key={i} className="text-sm bg-sky-50 text-sky-700 px-2 py-1 rounded-full">{skill}</span>
                                 ))}
                             </div>
                         </div>
                     )}
-                    {data.testimonials?.length > 0 && (
+                    {data.testimonials?.value?.length > 0 && (
                         <div className="bg-white p-4 rounded-lg shadow">
-                            <h3 className="font-semibold text-lg mb-2">Testimonials</h3>
+                            <h3 className="font-semibold text-lg mb-2">{getLabel(data, "testimonials", "Testimonials")}</h3>
                             <div className="space-y-2 text-sm text-gray-700">
-                                {data.testimonials.map((t, i) => (
-                                    <blockquote key={i} className="italic">“{t.text}” — <span className="font-medium not-italic text-gray-900">{t.author}</span></blockquote>
+                                {data.testimonials.value.map((testimonial, i) => (
+                                    <blockquote key={i} className="italic">“{testimonial.text}” — <span className="font-medium not-italic text-gray-900">{testimonial.author}</span></blockquote>
                                 ))}
                             </div>
                         </div>
@@ -63,27 +67,30 @@ export default function TemplateWebProfile({ data }) {
 
                 {/* Right column */}
                 <section className="md:col-span-2 space-y-6">
-                    <div className="bg-white p-6 rounded-lg shadow">
-                        <h3 className="font-semibold text-xl mb-4">Projects</h3>
-                        <div className="space-y-4">
-                            {data.projects?.map((p, i) => (
-                                <article key={i} className="border rounded p-4">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <h4 className="font-medium">{p.name}</h4>
-                                        {p.link && (
-                                            <a href={p.link} className="text-sky-600 text-sm" target="_blank" rel="noreferrer">Visit</a>
-                                        )}
-                                    </div>
-                                    <p className="text-gray-700 text-sm">{p.description}</p>
-                                </article>
-                            ))}
-                        </div>
-                    </div>
-                    {data.experience?.length > 0 && (
+                    {data.projects?.value?.length > 0 && (
                         <div className="bg-white p-6 rounded-lg shadow">
-                            <h3 className="font-semibold text-xl mb-4">Experience</h3>
+                            <h3 className="font-semibold text-xl mb-4">Projects</h3>
                             <div className="space-y-4">
-                                {data.experience?.map((job, i) => (
+                                {data.projects.value.map((project, i) => (
+                                    <article key={i} className="border rounded p-4">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <h4 className="font-medium">{project.name}</h4>
+                                            {project.link && (
+                                                <a href={project.link} className="text-sky-600 text-sm" target="_blank" rel="noreferrer">Visit</a>
+                                            )}
+                                        </div>
+                                        <p className="text-gray-700 text-sm">{project.description}</p>
+                                    </article>
+                                ))}
+                            </div>
+                        </div>
+
+                    )}
+                    {data.experience?.value?.length > 0 && (
+                        <div className="bg-white p-6 rounded-lg shadow">
+                            <h3 className="font-semibold text-xl mb-4">{getLabel(data, "experience", "Experience")}</h3>
+                            <div className="space-y-4">
+                                {data.experience.value.map((job, i) => (
                                     <div key={i} className="flex justify-between items-start">
                                         <div>
                                             <strong className="block text-gray-900">{job.role}</strong>
@@ -96,21 +103,21 @@ export default function TemplateWebProfile({ data }) {
                             </div>
                         </div>
                     )}
-                    {data.services?.length > 0 && (
+                    {data.services?.value?.length > 0 && (
                         <div className="bg-white p-6 rounded-lg shadow">
-                            <h3 className="font-semibold text-xl mb-4">Services</h3>
+                            <h3 className="font-semibold text-xl mb-4">{getLabel(data, "services", "Services")}</h3>
                             <ul className="space-y-2 text-sm text-gray-700">
-                                {data.services.map((s, i) => (
-                                    <li key={i}><strong>{s.name}</strong> — {s.description}</li>
+                                {data.services.value.map((service, i) => (
+                                    <li key={i}><strong>{service.name}</strong> — {service.description}</li>
                                 ))}
                             </ul>
                         </div>
                     )}
 
                     <div className="bg-white p-6 rounded-lg shadow">
-                        <h3 className="font-semibold text-xl mb-4">Contact</h3>
-                        <p className="text-gray-700">{data.contactText}</p>
-                        <a href={`mailto:${data.email}`} className="inline-block mt-4 bg-sky-600 text-white px-5 py-2 rounded-md">Email Me</a>
+                        <h3 className="font-semibold text-xl mb-4">{getLabel(data, "contactText", "Contact Text")}</h3>
+                        <p className="text-gray-700">{data.contactText?.value}</p>
+                        <a href={`mailto:${data.email?.value}`} className="inline-block mt-4 bg-sky-600 text-white px-5 py-2 rounded-md">Email Me</a>
                     </div>
                 </section>
             </main>

@@ -22,15 +22,48 @@ export const servicePropType = PropTypes.shape({
 });
 
 export const profilePropType = PropTypes.shape({
-    name: PropTypes.string,
-    headline: PropTypes.string,
-    photo: PropTypes.string,
-    about: PropTypes.string,
-    contacts: PropTypes.arrayOf(contactPropType),
-    skills: PropTypes.arrayOf(PropTypes.string),
-    projects: PropTypes.arrayOf(projectPropType),
-    testimonials: PropTypes.arrayOf(testimonialPropType),
-    services: PropTypes.arrayOf(servicePropType),
-    contactText: PropTypes.string,
-    email: PropTypes.string
+    name: PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.string
+    }),
+    tagline: PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.string
+    }),
+    photo: PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.string
+    }),
+    about: PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.string
+    }),
+    contacts: PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.arrayOf(contactPropType)
+    }),
+    skills: PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.arrayOf(PropTypes.string)
+    }),
+    projects: PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.arrayOf(projectPropType)
+    }),
+    testimonials: PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.arrayOf(testimonialPropType)
+    }),
+    services: PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.arrayOf(servicePropType)
+    }),
+    contactText: PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.string
+    }),
+    email: PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.string
+    })
 });

@@ -1,20 +1,20 @@
-import { OPTIONAL_SECTIONS } from "@components/edit/sections";
+import { SECTIONS } from "@components/sections/sections";
 import { PlusCircle } from "lucide-react";
 import {useState} from "react";
 
 export default function AddSectionDropdown({ profile, onAdd }) {
     const [selected, setSelected] = useState("");
 
-    const availableSections = OPTIONAL_SECTIONS.filter(section =>
-        !profile[section.key] && section.Component != null
-    );
+    const availableSections = Object.entries(SECTIONS)
+        .filter(([key, section]) => !profile[key] && section.Component != null)
+        .map(([key, section]) => ({ key, ...section }));
 
     if (availableSections.length === 0) return null;
 
     const handleAdd = () => {
         if (!selected) return;
-        const section = OPTIONAL_SECTIONS.find((s) => s.key === selected);
-        onAdd(section);
+        const section = SECTIONS[selected];
+        onAdd(selected, section.defaultValue);
         setSelected("");
     };
 

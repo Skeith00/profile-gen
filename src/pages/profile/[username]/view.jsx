@@ -1,15 +1,8 @@
-import TemplateProfessionalProfile from "@components/templates/TemplateProfessionalProfile"
-import TemplateWeb from "@components/templates/TemplateWebProfile"
-
-const templates = {
-    classic: TemplateProfessionalProfile,
-    web: TemplateWeb,
-    // Add more templates: modern, minimal, etc.
-}
+import { TEMPLATES } from "@components/templates/templates";
 
 export default function ProfilePage({ data }) {
     if (!data) return <div className="p-8">Profile not found.</div>;
-    const Template = templates[data.template] || TemplateProfessionalProfile; // fallback to classic
+    const Template = TEMPLATES[data.template] || TEMPLATES["classic"]; // fallback to classic
     return <Template data={data} />
 }
 
