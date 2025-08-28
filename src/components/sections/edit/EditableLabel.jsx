@@ -1,56 +1,35 @@
 import { useState } from "react";
 import { Pencil } from "lucide-react"; // lucide-react icons
 
-export default function EditableLabel({ sectionKey, profile, setProfile, defaultLabel }) {
+export default function EditableLabel({ data = "", onChange, defaultLabel }) {
     const [editing, setEditing] = useState(false);
-    const label = profile[sectionKey]?.label
+    const [tempValue, setTempValue] = useState(data || "");
 
     const handleSave = (newLabel) => {
-        changeLabel(newLabel)
+        onChange(newLabel)
         setEditing(false);
-    };
-
-
-    const changeLabel = (newLabel) => {
-        if (!newLabel.trim()) {
-            // delete the label from the section
-            const { label, ...rest } = profile[sectionKey];
-
-            setProfile({
-                ...profile,
-                [sectionKey]: rest
-            });
-        } else {
-            // update or set the label
-            setProfile({
-                ...profile,
-                [sectionKey]: {
-                    ...profile[sectionKey],
-                    label: newLabel
-                }
-            });
-        }
     };
 
     return (
         <div className="flex items-center gap-2">
-            <label className={label ? 'block font-light text-gray-600' : 'block font-semibold text-gray-700'}>{defaultLabel}</label>
+            <label className={tempValue ? 'block font-light text-gray-600' : 'block font-semibold text-gray-700'}>{defaultLabel}</label>
             {editing ? (
                 <input
                     type="text"
-                    value={label}
+                    value={tempValue}
                     autoFocus
-                    onChange={(e) => changeLabel(e.target.value)}
-                    onBlur={() => setEditing(false)} // exit edit mode when leaving
+                    onChange={(e) => setTempValue(e.target.value)}
+                    onBlur={handleSave}
                     onKeyDown={(e) => {
                         if (e.key === "Enter") handleSave(e.target.value);
                         if (e.key === "Escape") setEditing(false);
                     }}
-                    className="border border-gray-300 px-2 py-1 rounded text-sm w-full"
+                    className="border px-2 py-1 rounded"
+                    //className="border border-gray-300 px-2 py-1 rounded text-sm w-full"
                 />
             ) : (
                 <>
-                    <h2 className="text-lg font-semibold">{label}</h2>
+                    <h2 className="text-lg font-semibold">{data}</h2>
                     <button
                         type="button"
                         onClick={() => setEditing(true)}

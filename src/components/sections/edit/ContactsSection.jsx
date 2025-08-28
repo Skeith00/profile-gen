@@ -1,19 +1,22 @@
 import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
+import { handleValueChange } from "@components/sections/edit/utils";
+import PropTypes from "prop-types";
+import {contactPropType} from "@propTypes/profilePropTypes";
 
-export default function ContactsSection({ data = [], onChange }) {
-    const [contacts, setContacts] = useState(data);
+export default function ContactsSection({ data = {}, onChange }) {
+    const [contacts, setContacts] = useState(data.value || []);
 
-    const handleAdd = () => {
+    const handleAddSection = () => {
         const updated = [...contacts, { type: "", url: "" }];
         setContacts(updated);
-        onChange(updated);
+        handleValueChange(data, updated, onChange)
     };
 
-    const handleRemove = (index) => {
+    const handleRemoveSection = (index) => {
         const updated = contacts.filter((_, i) => i !== index);
         setContacts(updated);
-        onChange(updated);
+        handleValueChange(data, updated, onChange)
     };
 
     const handleChange = (index, field, value) => {
@@ -21,8 +24,9 @@ export default function ContactsSection({ data = [], onChange }) {
             i === index ? { ...contact, [field]: value } : contact
         );
         setContacts(updated);
-        onChange(updated);
+        handleValueChange(data, updated, onChange)
     };
+
 
     return (
         <div className="space-y-4">
@@ -52,7 +56,7 @@ export default function ContactsSection({ data = [], onChange }) {
                     {/* Remove button */}
                     <button
                         type="button"
-                        onClick={() => handleRemove(index)}
+                        onClick={() => handleRemoveSection(index)}
                         className="p-2 rounded-lg hover:bg-red-50"
                     >
                         <Trash2 className="w-5 h-5 text-red-500" />
@@ -63,7 +67,7 @@ export default function ContactsSection({ data = [], onChange }) {
             {/* Add button */}
             <button
                 type="button"
-                onClick={handleAdd}
+                onClick={handleAddSection}
                 className="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm font-medium"
             >
                 <Plus className="w-4 h-4" />
@@ -72,3 +76,11 @@ export default function ContactsSection({ data = [], onChange }) {
         </div>
     );
 }
+
+ContactsSection.propTypes = {
+    data: PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.arrayOf(contactPropType),
+    }).isRequired,
+    onChange: PropTypes.func.isRequired,
+};

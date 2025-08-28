@@ -1,7 +1,9 @@
 import ContactsSection from "@components/sections/edit/ContactsSection";
 import SkillsSection from "@components/sections/edit/SkillsSection";
+import AboutSection from "@components/sections/edit/AboutSection";
 
 export const SECTIONS = {
+    about: { label: 'About', defaultValue: '', Component: AboutSection },
     contacts: { label: 'Contacts', defaultValue: [], Component: ContactsSection },
     skills: { label: 'Skills', defaultValue: [], Component: SkillsSection },
     projects: { label: 'Projects', defaultValue: []},

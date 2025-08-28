@@ -4,9 +4,9 @@ import { useRouter } from 'next/router';
 import { profilePropType } from '@propTypes/profilePropTypes';
 import AddSectionDropdown from "@components/sections/edit/AddSectionDropdown";
 import OptionalSectionWrapper from "@components/sections/edit/OptionalSectionWrapper";
-import EditableLabel from "@components/sections/edit/EditableLabel";
 import { SECTIONS } from "@components/sections/sections";
 import { TEMPLATES } from "@components/templates/templates";
+import { handleLabelChange, handleValueChange } from "@components/sections/edit/utils";
 
 export default function EditProfile({ data, username }) {
     const router = useRouter();
@@ -32,6 +32,13 @@ export default function EditProfile({ data, username }) {
         setProfile(updated);
     }
 
+    function handleAddSection(key) {
+        setProfile((prev) => ({
+            ...prev,
+            [key]: {}
+        }));
+    }
+
     const handleSave = async (e) => {
         e.preventDefault();
         setSaving(true);
@@ -51,15 +58,18 @@ export default function EditProfile({ data, username }) {
         }
     }
 
-    function handleValueChange(key, newValue) {
-        setProfile({
-            ...profile,
-            [key]: {
-                ...profile[key],        // keep existing label (if any)
-                value: newValue         // update only the value field
-            }
-        });
+    function handleChange(key, updated) {
+        setProfile((prev) => ({
+            ...prev,
+            [key]: updated
+        }));
     }
+
+    const handleFieldChange = (field, value) => {
+        handleValueChange(profile[field], value, (update) =>
+            handleChange(field, update)
+        );
+    };
 
     return (
         <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-6">
@@ -71,8 +81,8 @@ export default function EditProfile({ data, username }) {
                     <label className="block font-semibold text-gray-700">Template</label>
                     <select
                         className="mt-1 w-full border rounded px-3 py-2 bg-white"
-                        value={profile.template.value}
-                        onChange={(e) => handleValueChange('template', e.target.value)}
+                        value={profile.template?.value}
+                        onChange={(e) => handleFieldChange("template", e.target.value)}
                     >
                         <option value="">-- Select a template --</option>
                         {Object.keys(TEMPLATES).map((key) => (
@@ -88,8 +98,8 @@ export default function EditProfile({ data, username }) {
                     <input
                         type="text"
                         className="mt-1 w-full border rounded px-3 py-2"
-                        value={profile.name.value}
-                        onChange={(e) => handleValueChange('name', e.target.value)}
+                        value={profile.name?.value}
+                        onChange={(e) => handleFieldChange("name", e.target.value)}
                     />
                 </div>
 
@@ -98,8 +108,8 @@ export default function EditProfile({ data, username }) {
                     <input
                         type="text"
                         className="mt-1 w-full border rounded px-3 py-2"
-                        value={profile.headline.value}
-                        onChange={(e) => handleValueChange('headline', e.target.value)}
+                        value={profile.headline?.value}
+                        onChange={(e) => handleFieldChange("headline", e.target.value)}
                     />
                 </div>
                 {/*<div>
@@ -112,27 +122,12 @@ export default function EditProfile({ data, username }) {
                     />
                 </div>*/}
                 <div>
-                    <EditableLabel
-                        sectionKey="about"
-                        profile={profile}
-                        setProfile={setProfile}
-                        defaultLabel={SECTIONS["about"] || "About"}
-                    />
-                    {/*<label className="block font-semibold text-gray-700">About</label>*/}
-                    <textarea
-                        className="mt-1 w-full border rounded px-3 py-2"
-                        value={profile.about.value}
-                        onChange={(e) => handleValueChange('about', e.target.value)}
-                    />
-                </div>
-
-                <div>
                     <label className="block font-semibold text-gray-700">Email</label>
                     <input
                         type="email"
                         className="mt-1 w-full border rounded px-3 py-2"
-                        value={profile.email.value}
-                        onChange={(e) => handleValueChange('email', e.target.value)}
+                        value={profile.email?.value}
+                        onChange={(e) => handleFieldChange("email", e.target.value)}
                     />
                 </div>
 
@@ -147,8 +142,8 @@ export default function EditProfile({ data, username }) {
                         >
                             {Component && (
                                 <Component
-                                    data={profile[key]?.value}
-                                    onChange={(val) => handleValueChange(key, val)}
+                                    data={profile[key]}
+                                    onChange={(update) => handleChange(key, update)}
                                 />
                             )}
                         </OptionalSectionWrapper>
@@ -158,7 +153,7 @@ export default function EditProfile({ data, username }) {
                 {/* Add section dropdown */}
                 <AddSectionDropdown
                     profile={profile}
-                    onAdd={(key, defaultValue) => handleValueChange(key, defaultValue)}
+                    onAdd={(key) => handleAddSection(key)}
                 />
 
                 {/* Preview button */}

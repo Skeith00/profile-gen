@@ -1,20 +1,22 @@
 import PropTypes from "prop-types";
 import {useState} from "react";
+import { handleValueChange } from "@components/sections/edit/utils";
 
-export default function SkillsSection({data = [], onChange}) {
-    const [input, setInput] = useState('');
+export default function SkillsSection({data = {}, onChange}) {
+    const [input, setInput] = useState("");
 
     const handleAddSkill = () => {
-        if (input.trim() && !data.includes(input.trim())) {
-            const newSkills = [...data, input.trim()];
-            onChange(newSkills);
-            setInput('');
+        const skill = input.trim();
+        if (skill && !data.value?.includes(skill)) {
+            const newSkills = [...(data.value || []), skill];
+            handleValueChange(data, newSkills, onChange)
+            setInput("");
         }
-    };
+    }
 
     const handleRemoveSkill = (skill) => {
-        const newSkills = data.filter((s) => s !== skill);
-        onChange(newSkills);
+        const newSkills = (data.value || []).filter((s) => s !== skill);
+        handleValueChange(data, newSkills, onChange)
     };
 
     return (
@@ -40,7 +42,7 @@ export default function SkillsSection({data = [], onChange}) {
 
             {/* Skills as tags */}
             <div className="flex flex-wrap gap-2">
-                {data.map((skill) => (
+                {data.value?.map((skill) => (
                     <span
                         key={skill}
                         className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2"
@@ -61,6 +63,9 @@ export default function SkillsSection({data = [], onChange}) {
 }
 
 SkillsSection.propTypes = {
-    data: PropTypes.arrayOf(PropTypes.string).isRequired,
+    data: PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.arrayOf(PropTypes.string),
+    }).isRequired,
     onChange: PropTypes.func.isRequired,
 };
