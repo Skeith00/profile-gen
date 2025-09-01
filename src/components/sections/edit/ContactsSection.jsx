@@ -7,13 +7,13 @@ import {contactPropType} from "@propTypes/profilePropTypes";
 export default function ContactsSection({ data = {}, onChange }) {
     const [contacts, setContacts] = useState(data.value || []);
 
-    const handleAddSection = () => {
+    const handleAddContact = () => {
         const updated = [...contacts, { type: "", url: "" }];
         setContacts(updated);
         handleValueChange(data, updated, onChange)
     };
 
-    const handleRemoveSection = (index) => {
+    const handleRemove = (index) => {
         const updated = contacts.filter((_, i) => i !== index);
         setContacts(updated);
         handleValueChange(data, updated, onChange)
@@ -56,7 +56,7 @@ export default function ContactsSection({ data = {}, onChange }) {
                     {/* Remove button */}
                     <button
                         type="button"
-                        onClick={() => handleRemoveSection(index)}
+                        onClick={() => handleRemove(index)}
                         className="p-2 rounded-lg hover:bg-red-50"
                     >
                         <Trash2 className="w-5 h-5 text-red-500" />
@@ -67,7 +67,7 @@ export default function ContactsSection({ data = {}, onChange }) {
             {/* Add button */}
             <button
                 type="button"
-                onClick={handleAddSection}
+                onClick={handleAddContact}
                 className="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm font-medium"
             >
                 <Plus className="w-4 h-4" />

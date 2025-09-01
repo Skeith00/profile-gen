@@ -2,11 +2,11 @@
 import { useState } from "react";
 import { useRouter } from 'next/router';
 import { profilePropType } from '@propTypes/profilePropTypes';
-import AddSectionDropdown from "@components/sections/edit/AddSectionDropdown";
-import OptionalSectionWrapper from "@components/sections/edit/OptionalSectionWrapper";
+import AddSectionDropdown from "@components/sections/edit/generics/AddSectionDropdown";
+import OptionalSectionWrapper from "@components/sections/edit/generics/OptionalSectionWrapper";
 import { SECTIONS } from "@components/sections/sections";
 import { TEMPLATES } from "@components/templates/templates";
-import { handleLabelChange, handleValueChange } from "@components/sections/edit/utils";
+import { handleValueChange } from "@components/sections/edit/utils";
 
 export default function EditProfile({ data, username }) {
     const router = useRouter();
@@ -130,7 +130,6 @@ export default function EditProfile({ data, username }) {
                         onChange={(e) => handleFieldChange("email", e.target.value)}
                     />
                 </div>
-
                 {/* Dynamically load optional sections */}
                 {Object.entries(SECTIONS).map(([key, { label, Component }]) =>
                     profile[key] && Component ? (

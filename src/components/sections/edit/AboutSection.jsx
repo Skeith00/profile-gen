@@ -1,4 +1,4 @@
-import EditableLabel from "@components/sections/edit/EditableLabel";
+import EditableLabel from "@components/sections/edit/generics/EditableLabel";
 import {SECTIONS} from "@components/sections/sections";
 import { handleLabelChange, handleValueChange } from "@components/sections/edit/utils";
 import PropTypes from "prop-types";

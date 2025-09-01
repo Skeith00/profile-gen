@@ -1,4 +1,3 @@
-
 export const handleLabelChange = (data, newLabel, onChange) => {
     onChange({
         ...data,

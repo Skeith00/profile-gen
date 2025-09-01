@@ -15,7 +15,6 @@ export default function OptionalSectionWrapper({sectionKey, label, children, onR
                 transition={{ duration: 0.2 }}
                 className="border rounded-xl p-4 mb-6 shadow-sm bg-white"
             >
-
                 {/* Header with collapse + remove */}
                 <div className="flex justify-between items-center mb-3">
                     <h2 className="text-lg font-semibold">{label}</h2>

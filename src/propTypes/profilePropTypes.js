@@ -8,7 +8,8 @@ export const contactPropType = PropTypes.shape({
 export const projectPropType = PropTypes.shape({
     name: PropTypes.string,
     description: PropTypes.string,
-    link: PropTypes.string
+    link: PropTypes.string,
+    image: PropTypes.string
 });
 
 export const testimonialPropType = PropTypes.shape({
