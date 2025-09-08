@@ -4,9 +4,29 @@ import TemplateCreativeProfile from "@components/templates/TemplateCreativeProfi
 import TemplateSimpleProfile from "@components/templates/TemplateSimpleProfile";
 
 export const TEMPLATES = {
-    classic: TemplateProfessionalProfile,
-    web: TemplateWeb,
-    creative: TemplateCreativeProfile,
-    simple: TemplateSimpleProfile,
+    classic: {
+        view: TemplateProfessionalProfile, edit: {
+            mandatory: ["name", "headline", "email"],   // required sections
+            optional: ["about", "contacts", "skills", "projects", "services", "testimonials"], // user can toggle
+        }
+    },
+    web: {
+        view: TemplateWeb, edit: {
+            mandatory: ["name", "headline", "email"],   // required sections
+            optional: ["about", "contacts", "skills", "projects", "services", "testimonials"], // user can toggle
+        }
+    },
+    creative: {
+        view: TemplateCreativeProfile, edit: {
+            mandatory: ["name", "headline"],   // required sections
+            optional: ["projects", "contactText", "contacts"], // user can toggle
+        }
+    },
+    simple: {
+        view: TemplateSimpleProfile, edit: {
+            mandatory: ["name", "headline", "email"],   // required sections
+            optional: ["about", "contacts", "skills", "projects", "services", "testimonials"], // user can toggle
+        }
+    },
     // Add more templates: modern, minimal, etc.
 }

@@ -30,6 +30,7 @@ export default function ContactsSection({ data = {}, onChange }) {
 
     return (
         <div className="space-y-4">
+            <label className="block font-semibold text-gray-700">Contacts</label>
             {contacts.map((contact, index) => (
                 <div
                     key={index}

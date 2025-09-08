@@ -27,7 +27,7 @@ export const profilePropType = PropTypes.shape({
         label: PropTypes.string,
         value: PropTypes.string
     }),
-    tagline: PropTypes.shape({
+    headline: PropTypes.shape({
         label: PropTypes.string,
         value: PropTypes.string
     }),

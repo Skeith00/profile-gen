@@ -53,12 +53,11 @@ export default function ProjectsSection({ data = {}, onChange }) {
 
     return (
         <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-3">{data.label}</h3>
-
+            <label className="block font-semibold text-gray-700">Projects</label>
             {projects.map((project, index) => (
                 <div
                     key={index}
-                    className="border rounded-lg p-4 mb-3 flex flex-col gap-2 bg-gray-50"
+                    className="border rounded-lg p-4 my-2 flex flex-col gap-2 bg-gray-50"
                 >
                     <input
                         type="text"
@@ -83,7 +82,7 @@ export default function ProjectsSection({ data = {}, onChange }) {
                     <input
                         type="file"
                         accept="image/*"
-                        onChange={(e) => handleFileChange(index, e.target.files[0])}
+                        onChange={(e) => handleChange(index, e.target.files[0])}
                         className="p-2 border rounded-lg"
                     />
                     {project.image && (

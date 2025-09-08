@@ -2,7 +2,7 @@ import { TEMPLATES } from "@components/templates/templates";
 
 export default function ProfilePage({ data }) {
     if (!data) return <div className="p-8">Profile not found.</div>;
-    const Template = TEMPLATES[data.template.value] || TEMPLATES["classic"]; // fallback to classic
+    const Template = TEMPLATES[data.template?.value]?.view || TEMPLATES["classic"]?.view; // fallback to classic
     return <Template data={data} />
 }
 

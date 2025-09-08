@@ -1,9 +1,9 @@
 // pages/profile/[username]/edit.jsx
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useRouter } from 'next/router';
 import { profilePropType } from '@propTypes/profilePropTypes';
 import AddSectionDropdown from "@components/sections/edit/generics/AddSectionDropdown";
-import OptionalSectionWrapper from "@components/sections/edit/generics/OptionalSectionWrapper";
+import CollapsibleSectionWrapper from "@components/sections/edit/generics/CollapsibleSectionWrapper";
 import { SECTIONS } from "@components/sections/sections";
 import { TEMPLATES } from "@components/templates/templates";
 import { handleValueChange } from "@components/sections/edit/utils";
@@ -12,19 +12,24 @@ export default function EditProfile({ data, username }) {
     const router = useRouter();
     const [profile, setProfile] = useState(data || {
         template: {},
-        name: {},
-        headline: {},
+        //name: {},
+        //headline: {},
         //photo: '',
-        about: {},
-        email: {},
+        //about: {},
+        //email: {},
         //contacts: [],
         //skills: [],
         //projects: [],
         //testimonials: [],
         //services: [],
     });
-
+    const [template, setTemplate] = useState(data.template || { mandatory: [], optional: [] })
     const [saving, setSaving] = useState(false);
+
+    useEffect(() => {
+        const template = TEMPLATES[profile.template?.value].edit || { mandatory: [], optional: [] };
+        setTemplate(template)
+    }, [profile.template])
 
     function handleRemoveSection(key) {
         const updated = { ...profile };
@@ -72,6 +77,7 @@ export default function EditProfile({ data, username }) {
     };
 
     return (
+
         <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-6">
             <h1 className="text-2xl font-bold mb-6 text-gray-800">Edit Profile</h1>
 
@@ -93,25 +99,16 @@ export default function EditProfile({ data, username }) {
                     </select>
                 </div>
                 {/* Mandatory fields */}
-                <div>
-                    <label className="block font-semibold text-gray-700">Name</label>
-                    <input
-                        type="text"
-                        className="mt-1 w-full border rounded px-3 py-2"
-                        value={profile.name?.value}
-                        onChange={(e) => handleFieldChange("name", e.target.value)}
-                    />
-                </div>
-
-                <div>
-                    <label className="block font-semibold text-gray-700">Headline</label>
-                    <input
-                        type="text"
-                        className="mt-1 w-full border rounded px-3 py-2"
-                        value={profile.headline?.value}
-                        onChange={(e) => handleFieldChange("headline", e.target.value)}
-                    />
-                </div>
+                {template?.mandatory?.map((key) => {
+                    const SectionComponent = SECTIONS[key]?.Component;
+                    return SectionComponent ? (
+                        <SectionComponent
+                            key={key}
+                            data={profile[key] || {}}
+                            onChange={(update) => handleChange(key, update)}
+                        />
+                    ) : null;
+                })}
                 {/*<div>
                     <label className="block font-semibold text-gray-700">Photo URL</label>
                     <input
@@ -121,34 +118,24 @@ export default function EditProfile({ data, username }) {
                         onChange={(e) => handleValueChange('photo', e.target.value)}
                     />
                 </div>*/}
-                <div>
-                    <label className="block font-semibold text-gray-700">Email</label>
-                    <input
-                        type="email"
-                        className="mt-1 w-full border rounded px-3 py-2"
-                        value={profile.email?.value}
-                        onChange={(e) => handleFieldChange("email", e.target.value)}
-                    />
-                </div>
-                {/* Dynamically load optional sections */}
-                {Object.entries(SECTIONS).map(([key, { label, Component }]) =>
-                    profile[key] && Component ? (
-                        <OptionalSectionWrapper
+                {/* Dynamically load sections */}
+                {template?.optional?.map((key) => {
+                    const SectionComponent = SECTIONS[key]?.Component;
+                    const label = SECTIONS[key]?.label;
+                    return SectionComponent && profile[key] && (
+                        <CollapsibleSectionWrapper
                             key={key}
                             sectionKey={key}
                             label={label}
                             onRemove={handleRemoveSection}
                         >
-                            {Component && (
-                                <Component
-                                    data={profile[key]}
-                                    onChange={(update) => handleChange(key, update)}
-                                />
-                            )}
-                        </OptionalSectionWrapper>
-                    ) : null
-                )}
-
+                            <SectionComponent
+                                data={profile[key]}
+                                onChange={(update) => handleChange(key, update)}
+                            />
+                        </CollapsibleSectionWrapper>
+                    )
+                })}
                 {/* Add section dropdown */}
                 <AddSectionDropdown
                     profile={profile}

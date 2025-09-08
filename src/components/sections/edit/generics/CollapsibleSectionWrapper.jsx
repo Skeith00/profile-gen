@@ -2,7 +2,7 @@ import { useState } from "react";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function OptionalSectionWrapper({sectionKey, label, children, onRemove}) {
+export default function CollapsibleSectionWrapper({sectionKey, label, children, onRemove}) {
     const [collapsed, setCollapsed] = useState(false);
 
     return (
@@ -16,8 +16,23 @@ export default function OptionalSectionWrapper({sectionKey, label, children, onR
                 className="border rounded-xl p-4 mb-6 shadow-sm bg-white"
             >
                 {/* Header with collapse + remove */}
-                <div className="flex justify-between items-center mb-3">
-                    <h2 className="text-lg font-semibold">{label}</h2>
+                <div className="flex justify-between items-center">
+                    <div>
+                        <AnimatePresence>
+                            {collapsed && (
+                                <motion.h2
+                                    key="section-title"
+                                    className="text-lg font-semibold"
+                                    initial={{ opacity: 0, y: -5 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -5 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    {label}
+                                </motion.h2>
+                            )}
+                        </AnimatePresence>
+                    </div>
                     <div className="flex gap-3">
                         {/* Collapse button */}
                         <button

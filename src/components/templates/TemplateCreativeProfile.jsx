@@ -1,4 +1,5 @@
 import {getLabel} from "@components/sections/sections";
+import React from "react";
 
 export default function TemplateCreativeProfile({data}) {
     return (
@@ -8,28 +9,19 @@ export default function TemplateCreativeProfile({data}) {
                 {/* Hero */}
                 <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-5">
                     <div className="max-w-4xl mx-auto text-center">
-                        <h1 className="text-4xl font-bold mt-4">{data.name?.value}</h1>
-                        <p className="text-xl mt-2">{data.headline?.value}</p>
-                        {data.contacts?.length > 0 && (
-                            <div className="flex justify-center gap-4 mt-4">
-                                {data.contacts.map((contact, idx) => (
-                                    <a
-                                        key={idx}
-                                        href={contact.url}
-                                        className="bg-white text-blue-600 px-4 py-2 rounded shadow hover:bg-gray-100"
-                                    >
-                                        {contact.type}
-                                    </a>
-                                ))}
-                            </div>
+                        {data.name?.value && (
+                            <h1 className="text-4xl font-bold mt-4">{data.name?.value}</h1>
+                        )}
+                        {data.headline?.value && (
+                            <p className="text-xl mt-2">{data.headline?.value}</p>
                         )}
                     </div>
                 </section>
 
                 {/* Projects */}
-                <section className="my-8">
-                    <div className="container mx-auto px-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <section className="my-4">
+                    <div className="container mx-auto px-2">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {data.projects?.value?.map((project, idx) => (
                                 <article
                                     key={idx}
@@ -59,18 +51,23 @@ export default function TemplateCreativeProfile({data}) {
             </div>
 
             {/* Contact */}
-            <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-5">
-                <div className="max-w-4xl mx-auto text-center">
-                    <h2 className="text-2xl font-semibold mb-4">{getLabel(data, "contactText", "Contact Text")}</h2>
-                    <p>{data.contactText?.value}</p>
-                    <a
-                        href={`mailto:${data.email?.value}`}
-                        className="mt-4 inline-block bg-white text-blue-600 px-6 py-2 rounded shadow hover:bg-gray-100"
-                    >
-                        {getLabel(data, "email", "Email Me")}
-                    </a>
-                </div>
-            </section>
+            {data.contacts?.value?.length > 0 && (
+                <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-5">
+                    <div className="max-w-4xl mx-auto text-center">
+                        {data.contactText?.value && (
+                            <h2 className="text-2xl font-semibold mb-4">{data.contactText?.value}</h2>
+                        )}
+                        {data.contacts.value.map((contact, i) => (
+                            <a key={i} href={contact.url}
+                               target="_blank" rel="noopener noreferrer"
+                               className="mt-4 inline-block bg-white text-blue-600 px-6 py-2 rounded shadow hover:bg-gray-100"
+                            >
+                                {contact.type}
+                            </a>
+                        ))}
+                    </div>
+                </section>
+            )}
         </div>
     );
 }
