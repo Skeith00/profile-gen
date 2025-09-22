@@ -5,7 +5,7 @@ import {TEMPLATES} from "@components/templates/templates";
 
 export default function AddSectionDropdown({ profile, onAdd }) {
     const [selectedKey, setSelected] = useState("");
-    const template = TEMPLATES[profile.template?.value].edit || { mandatory: [], optional: [] };
+    const template = TEMPLATES[profile.template?.value]?.edit || { mandatory: [], optional: [] };
 
     const availableSections = template.optional
         .filter((key) => SECTIONS[key] && !profile[key] && SECTIONS[key].Component != null)

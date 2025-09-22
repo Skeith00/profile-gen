@@ -12,7 +12,7 @@ export default async function handler(req, res) {
                 "Content-Type": "application/json",
             },
         });
-        if (!couchRes.ok) return res.status(404).json({ error: 'Profile not found' });
+        if (!couchRes.ok) return res.status(404).json({ statusText: 'Profile not found' });
         const data = await couchRes.json();
         return res.status(couchRes.status).json(data);
     }
@@ -26,33 +26,10 @@ export default async function handler(req, res) {
             },
             body: JSON.stringify(req.body),
         });
+        if (!couchRes.ok) return res.status(500).json({ statusText: 'Profile not saved' });
         const data = await couchRes.json();
         return res.status(couchRes.status).json(data);
     }
 
     return res.status(405).json({ error: 'Method Not Allowed' });
 }
-
-const handleFiles = async (index, file) => {
-    if (!file) return;
-
-    try {
-        // Example: send file to backend for upload
-        const formData = new FormData();
-        formData.append("file", file);
-
-        const res = await fetch("/api/upload", {
-            method: "POST",
-            body: formData,
-        });
-
-        if (!res.ok) throw new Error("Upload failed");
-
-        const { url } = await res.json(); // backend should return { url: "https://..." }
-
-        // Save URL into project.image
-        handleChange(index, "image", url);
-    } catch (err) {
-        console.error("File upload error:", err);
-    }
-};

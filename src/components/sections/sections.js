@@ -5,15 +5,16 @@ import ProjectsSection from "@components/sections/edit/ProjectsSection";
 import NameSection from "@components/sections/edit/NameSection";
 import HeadlineSection from "@components/sections/edit/HeadlineSection";
 import EmailSection from "@components/sections/edit/EmailSection";
+import CollapsibleSectionWrapper from "@components/sections/edit/generics/CollapsibleSectionWrapper";
 
 export const SECTIONS = {
     name: { label: 'Name', defaultValue: '', Component: NameSection },
     headline: { label: 'Headline', defaultValue: '', Component: HeadlineSection },
     email: { label: 'Email', defaultValue: '', Component: EmailSection },
-    about: { label: 'About', defaultValue: '', Component: AboutSection },
-    contacts: { label: 'Contacts', defaultValue: [], Component: ContactsSection },
-    skills: { label: 'Skills', defaultValue: [], Component: SkillsSection },
-    projects: { label: 'Projects', defaultValue: [], Component: ProjectsSection },
+    about: { label: 'About', defaultValue: '', Component: AboutSection, collapsible: true },
+    contacts: { label: 'Contacts', defaultValue: [], Component: ContactsSection, collapsible: true },
+    skills: { label: 'Skills', defaultValue: [], Component: SkillsSection, collapsible: true },
+    projects: { label: 'Projects', defaultValue: [], Component: ProjectsSection, collapsible: true },
     testimonials: { label: 'Testimonials', defaultValue: [] },
     services: { label: 'Services', defaultValue: [] },
     contactText: { label: 'Contact Text', defaultValue: '' }

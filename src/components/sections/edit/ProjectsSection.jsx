@@ -26,31 +26,6 @@ export default function ProjectsSection({ data = {}, onChange }) {
         handleValueChange(data, updated, onChange);
     };
 
-    const handleFileChange = async (index, file) => {
-        if (!file) return;
-
-        try {
-            // Example: send file to backend for upload
-            const formData = new FormData();
-            formData.append("file", file);
-
-            const res = await fetch("/api/upload", {
-                method: "POST",
-                body: formData,
-            });
-
-            if (!res.ok) throw new Error("Upload failed");
-
-            const { url } = await res.json(); // backend should return { url: "https://..." }
-
-            // Save URL into project.image
-            handleChange(index, "image", url);
-        } catch (err) {
-            console.error("File upload error:", err);
-        }
-    };
-
-
     return (
         <div className="mb-6">
             <label className="block font-semibold text-gray-700">Projects</label>
@@ -82,7 +57,7 @@ export default function ProjectsSection({ data = {}, onChange }) {
                     <input
                         type="file"
                         accept="image/*"
-                        onChange={(e) => handleChange(index, e.target.files[0])}
+                        onChange={(e) => handleChange(index, "image", e.target.files[0])}
                         className="p-2 border rounded-lg"
                     />
                     {project.image && (

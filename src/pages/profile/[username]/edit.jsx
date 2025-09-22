@@ -7,6 +7,8 @@ import CollapsibleSectionWrapper from "@components/sections/edit/generics/Collap
 import { SECTIONS } from "@components/sections/sections";
 import { TEMPLATES } from "@components/templates/templates";
 import { handleValueChange } from "@components/sections/edit/utils";
+import { handleFileChange,  } from "@services/file-loader";
+import { safeFetch,  } from "@services/helper";
 
 export default function EditProfile({ data, username }) {
     const router = useRouter();
@@ -23,11 +25,11 @@ export default function EditProfile({ data, username }) {
         //testimonials: [],
         //services: [],
     });
-    const [template, setTemplate] = useState(data.template || { mandatory: [], optional: [] })
+    const [template, setTemplate] = useState(data?.template || "")
     const [saving, setSaving] = useState(false);
 
     useEffect(() => {
-        const template = TEMPLATES[profile.template?.value].edit || { mandatory: [], optional: [] };
+        const template = TEMPLATES[profile.template?.value]?.edit || { mandatory: [], optional: [] };
         setTemplate(template)
     }, [profile.template])
 
@@ -48,18 +50,21 @@ export default function EditProfile({ data, username }) {
         e.preventDefault();
         setSaving(true);
 
-        const res = await fetch(`/api/profile/${username}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(profile)
-        });
 
-        setSaving(false);
-
-        if (res.ok) {
+        try {
+            let tmpProfile = await handleFileChange(profile, username)
+            setProfile(tmpProfile)
+            await safeFetch(`/api/profile/${username}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(profile)
+            });
             await router.push(`/profile/${username}/view`);
-        } else {
-            alert('Failed to save profile');
+        } catch (err) {
+            console.error("Save error:", err);
+            alert(err.message || "Failed to save profile");
+        } finally {
+            setSaving(false);
         }
     }
 
@@ -84,8 +89,9 @@ export default function EditProfile({ data, username }) {
             <form onSubmit={handleSave} className="space-y-6">
                 {/* Template Dropdown */}
                 <div>
-                    <label className="block font-semibold text-gray-700">Template</label>
+                    <label htmlFor="template" className="block font-semibold text-gray-700">Template</label>
                     <select
+                        id="template"
                         className="mt-1 w-full border rounded px-3 py-2 bg-white"
                         value={profile.template?.value}
                         onChange={(e) => handleFieldChange("template", e.target.value)}
@@ -170,9 +176,26 @@ EditProfile.propTypes = {
 
 export async function getServerSideProps(context) {
     const { username } = context.params;
-    const res = await fetch(`${process.env.PUBLIC_BASE_URL}/api/profile/${username}`);
+    try {
+        const res = await fetch(`${process.env.PUBLIC_BASE_URL}/api/profile/${username}`);
 
-    if (!res.ok) {
+        if (!res.ok) {
+            return {
+                props: {
+                    username,
+                }
+            }
+        }
+
+        const data = await res.json();
+
+        return {
+            props: {
+                data,
+                username,
+            }
+        }
+    } catch (e) {
         return {
             props: {
                 username,
@@ -180,12 +203,4 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const data = await res.json();
-
-    return {
-        props: {
-            data,
-            username,
-        }
-    }
 }

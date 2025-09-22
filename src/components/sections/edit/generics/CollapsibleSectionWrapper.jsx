@@ -19,18 +19,16 @@ export default function CollapsibleSectionWrapper({sectionKey, label, children, 
                 <div className="flex justify-between items-center">
                     <div>
                         <AnimatePresence>
-                            {collapsed && (
-                                <motion.h2
-                                    key="section-title"
-                                    className="text-lg font-semibold"
-                                    initial={{ opacity: 0, y: -5 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -5 }}
-                                    transition={{ duration: 0.2 }}
-                                >
-                                    {label}
-                                </motion.h2>
-                            )}
+                            <motion.h2
+                                key="section-title"
+                                className="text-lg font-semibold"
+                                initial={{ opacity: 0, y: -5 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -5 }}
+                                transition={{ duration: 0.2 }}
+                            >
+                                {label}
+                            </motion.h2>
                         </AnimatePresence>
                     </div>
                     <div className="flex gap-3">
