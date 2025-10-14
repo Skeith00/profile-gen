@@ -7,23 +7,12 @@ import CollapsibleSectionWrapper from "@components/sections/edit/generics/Collap
 import { SECTIONS } from "@components/sections/sections";
 import { TEMPLATES } from "@components/templates/templates";
 import { handleValueChange } from "@components/sections/edit/utils";
-import { handleFileChange,  } from "@services/file-loader";
-import { safeFetch,  } from "@services/helper";
+import { handleFileChange } from "@services/file-loader";
 
 export default function EditProfile({ data, username }) {
     const router = useRouter();
     const [profile, setProfile] = useState(data || {
         template: {},
-        //name: {},
-        //headline: {},
-        //photo: '',
-        //about: {},
-        //email: {},
-        //contacts: [],
-        //skills: [],
-        //projects: [],
-        //testimonials: [],
-        //services: [],
     });
     const [template, setTemplate] = useState(data?.template || "")
     const [saving, setSaving] = useState(false);
@@ -31,7 +20,7 @@ export default function EditProfile({ data, username }) {
     useEffect(() => {
         const template = TEMPLATES[profile.template?.value]?.edit || { mandatory: [], optional: [] };
         setTemplate(template)
-    }, [profile.template])
+    }, [profile.template?.value])
 
     function handleRemoveSection(key) {
         const updated = { ...profile };
@@ -46,23 +35,32 @@ export default function EditProfile({ data, username }) {
         }));
     }
 
-    const handleSave = async (e) => {
+    async function handleSave(e){
         e.preventDefault();
         setSaving(true);
-
 
         try {
             let tmpProfile = await handleFileChange(profile, username)
             setProfile(tmpProfile)
-            await safeFetch(`/api/profile/${username}`, {
+            const sanitizedProfile = {
+                ...tmpProfile,
+                projects: Array.isArray(tmpProfile.projects?.value)
+                    ? { value: tmpProfile.projects.value.map(({ image, ...rest }) => rest) }
+                    : {},
+            };
+            await fetch(`/api/profile/${username}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(profile)
+                body: JSON.stringify(sanitizedProfile)
             });
             await router.push(`/profile/${username}/view`);
         } catch (err) {
             console.error("Save error:", err);
-            alert(err.message || "Failed to save profile");
+            //alert(err.message || "Failed to save profile");
+            await router.push({
+                pathname: '/error/_error',
+                query: { statusCode: 500 },
+            });
         } finally {
             setSaving(false);
         }
@@ -107,13 +105,29 @@ export default function EditProfile({ data, username }) {
                 {/* Mandatory fields */}
                 {template?.mandatory?.map((key) => {
                     const SectionComponent = SECTIONS[key]?.Component;
-                    return SectionComponent ? (
+                    const label = SECTIONS[key]?.label;
+                    const collapsible = SECTIONS[key]?.collapsible;
+
+                    if (!SectionComponent) return null;
+
+                    return collapsible ? (
+                        <CollapsibleSectionWrapper
+                            key={key}
+                            sectionKey={key}
+                            label={label}
+                        >
+                            <SectionComponent
+                                data={profile[key] || {}}
+                                onChange={(update) => handleChange(key, update)}
+                            />
+                        </CollapsibleSectionWrapper>
+                    ) : (
                         <SectionComponent
                             key={key}
                             data={profile[key] || {}}
                             onChange={(update) => handleChange(key, update)}
                         />
-                    ) : null;
+                    );
                 })}
                 {/*<div>
                     <label className="block font-semibold text-gray-700">Photo URL</label>
@@ -128,7 +142,11 @@ export default function EditProfile({ data, username }) {
                 {template?.optional?.map((key) => {
                     const SectionComponent = SECTIONS[key]?.Component;
                     const label = SECTIONS[key]?.label;
-                    return SectionComponent && profile[key] && (
+                    const collapsible = SECTIONS[key]?.collapsible;
+
+                    if (!SectionComponent || !profile[key]) return null;
+
+                    return collapsible ? (
                         <CollapsibleSectionWrapper
                             key={key}
                             sectionKey={key}
@@ -140,6 +158,12 @@ export default function EditProfile({ data, username }) {
                                 onChange={(update) => handleChange(key, update)}
                             />
                         </CollapsibleSectionWrapper>
+                    ) : (
+                        <SectionComponent
+                            key={key}
+                            data={profile[key]}
+                            onChange={(update) => handleChange(key, update)}
+                        />
                     )
                 })}
                 {/* Add section dropdown */}
@@ -178,29 +202,35 @@ export async function getServerSideProps(context) {
     const { username } = context.params;
     try {
         const res = await fetch(`${process.env.PUBLIC_BASE_URL}/api/profile/${username}`);
-
-        if (!res.ok) {
+        if (res.status === 404) {
             return {
-                props: {
-                    username,
-                }
-            }
+                redirect: {
+                    destination: "/profile/register",
+                    permanent: false,
+                },
+            };
         }
-
+        if (!res.ok) {
+            throw new Error(`Failed to fetch profile: ${res.status}`);
+        }
         const data = await res.json();
-
+        /*if (!data) {
+            return { notFound: true }; // Show 404 page if data is missing
+        }*/
         return {
             props: {
-                data,
+                data: data || { template: {} },
                 username,
             }
         }
-    } catch (e) {
+    } catch (err) {
+        console.error("Error fetching profile:", err);
         return {
-            props: {
-                username,
-            }
-        }
+            redirect: {
+                destination: "/error/_error",
+                permanent: false,
+            },
+        };
     }
 
 }

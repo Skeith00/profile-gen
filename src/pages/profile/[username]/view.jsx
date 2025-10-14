@@ -1,9 +1,9 @@
 import { TEMPLATES } from "@components/templates/templates";
 
-export default function ProfilePage({ data }) {
+export default function ProfilePage({ data, username }) {
     if (!data) return <div className="p-8">Profile not found.</div>;
     const Template = TEMPLATES[data.template?.value]?.view || TEMPLATES["classic"]?.view; // fallback to classic
-    return <Template data={data} />
+    return <Template data={data} username={username} />
 }
 
 export async function getServerSideProps(context) {
@@ -19,6 +19,7 @@ export async function getServerSideProps(context) {
     return {
         props: {
             data,
+            username
         }
     }
 }

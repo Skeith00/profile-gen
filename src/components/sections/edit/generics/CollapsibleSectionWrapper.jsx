@@ -46,14 +46,16 @@ export default function CollapsibleSectionWrapper({sectionKey, label, children, 
                             )}
                         </button>
                         {/* Remove button */}
-                        <button
-                            type="button"
-                            onClick={() => onRemove(sectionKey)}
-                            className="p-1 rounded-full hover:bg-red-50"
-                            title="Remove"
-                        >
-                            <X className="w-5 h-5 text-red-500" />
-                        </button>
+                        {onRemove && (
+                            <button
+                                type="button"
+                                onClick={() => onRemove(sectionKey)}
+                                className="p-1 rounded-full hover:bg-red-50"
+                                title="Remove"
+                            >
+                                <X className="w-5 h-5 text-red-500" />
+                            </button>
+                        )}
                     </div>
                 </div>
 

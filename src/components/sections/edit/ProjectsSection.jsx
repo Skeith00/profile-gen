@@ -28,7 +28,7 @@ export default function ProjectsSection({ data = {}, onChange }) {
 
     return (
         <div className="mb-6">
-            <label className="block font-semibold text-gray-700">Projects</label>
+            {/*<label className="block font-semibold text-gray-700">Projects</label>*/}
             {projects.map((project, index) => (
                 <div
                     key={index}
@@ -57,12 +57,19 @@ export default function ProjectsSection({ data = {}, onChange }) {
                     <input
                         type="file"
                         accept="image/*"
-                        onChange={(e) => handleChange(index, "image", e.target.files[0])}
+                        onChange={(e) => {
+                            URL.revokeObjectURL(project.image)
+                            handleChange(index, "image", e.target.files[0])
+                        }}
                         className="p-2 border rounded-lg"
                     />
                     {project.image && (
                         <img
-                            src={project.image}
+                            src={
+                                project.image instanceof File
+                                    ? URL.createObjectURL(project.image)
+                                    : `/api/image/${project.imagePath}`
+                            }
                             alt={`${project.name || "Project"} preview`}
                             className="w-32 h-32 object-cover rounded-md border"
                         />

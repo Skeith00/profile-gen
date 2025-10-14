@@ -23,6 +23,7 @@ services:
     environment:
       MINIO_ROOT_USER: minioadmin  # Root user for MinIO Console
       MINIO_ROOT_PASSWORD: minioadmin  # Root password for MinIO Console
+
     command: server --console-address ":9001" /data
 
 volumes:
