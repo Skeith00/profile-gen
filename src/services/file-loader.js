@@ -77,9 +77,17 @@ export async function handleFileFetching(profile, username){
         body: JSON.stringify({ files: filesToFetch }),
     });
 
+    const newProjects = [...profile.projects.value];
+
     // Step 3: Upload files
     await Promise.all(
         urls.map(async ({ projectId, getUrl }) => {
+            if (newProjects[projectId]) {
+                newProjects[projectId] = {
+                    ...newProjects[projectId],
+                    image: getUrl,
+                };
+            }
             const project = profile.projects?.value[projectId];
             if (project) {
                 project.image = getUrl;
@@ -87,5 +95,12 @@ export async function handleFileFetching(profile, username){
         })
     );
 
-    return profile;
+    // return a NEW profile object
+    return {
+        ...profile,
+        projects: {
+            ...profile.projects,
+            value: newProjects,
+        },
+    };
 }
